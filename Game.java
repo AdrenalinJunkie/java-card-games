@@ -2,11 +2,16 @@ package com.cards.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
+
 
 //start off with ones that are clearly similar, like black maria, whist, rummy, etc
 public class Game {
 //    I guess generates all the other things, but kinda need user input somewhere for player number
     public static void main(String[] args) {
+
+        Board board = new Board();
 
     }
 }
@@ -24,8 +29,11 @@ class Player {
         this.hand = new Hand(hand);
     }
     //    this should probably be a string
-    public void play(Card card) {
-        this.hand.play(card);
+    public void play(Board board) {
+        Scanner scan = new Scanner(System.in);
+        String s = scan.next();
+        Card card = new Card(s);
+        this.hand.play(card, board);
     }
 
 }
@@ -47,7 +55,7 @@ class Discards {
         this.discards = new ArrayList<Card>();
     }
     public void add(Card card){
-        this.discards.add(card);--
+        this.discards.add(card);
     }
 }
 
@@ -117,5 +125,22 @@ class Card {
     public Card(int suit, int value){
         this.suit = suit;
         this.value = value;
+    }
+    @Override
+    public boolean equals(Object o) {
+
+        // If the object is compared with itself then return true
+        if (o == this) {
+            return true;
+        }
+
+        /* Check if o is an instance of Complex or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof Card)) {
+            return false;
+        }
+        Card card = (Card) o;
+        return Integer.compare(this.suit, card.suit) == 0
+                && Integer.compare(this.value, card.value) == 0;
     }
 }
