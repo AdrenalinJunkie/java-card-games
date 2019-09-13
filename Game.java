@@ -13,14 +13,19 @@ public class Game {
 
 class Player {
     Hand hand;
-
+    int score;
+//    may change type of this at some point - makes sense as I guess it needs score
+    Hand discardList;
     public Player(List<Card> cardList) {
-        this.hand = new Hand(cardList);
+//        not necessarily sure this code should be in here. I kinda want an empty hand to start
+        this.hand = new Hand();
     }
-
+    public void newHand(List<Card> hand){
+        this.hand = new Hand(hand);
+    }
     //    this should probably be a string
     public void play(Card card) {
-        this.hand.play(card)
+        this.hand.play(card);
     }
 
 }
@@ -28,7 +33,7 @@ class Player {
 // I guess this is the main class that changes from game to game. So it would be nice to have different implementations
 //of isLegal and play
 class Board {
-    public boolean isLegal(Card card, Hand hand){
+    public boolean isLegal(Card card, List<Card> hand){
         return true;
     }
     public void play(Card card){
@@ -36,70 +41,67 @@ class Board {
     }
 }
 
-class CardList {
-    // Hopefully something that deck, hand and columns can utilise
-    List<Card> cardList = new ArrayList<Card>();
-
-//    constructor doesn't need void, etc as output because we already know the output
-    public CardList(List<Card> cardList){
-        this.cardList = cardList;
+class Discards {
+    List<Card> discards = new ArrayList<Card>();
+    public Discards(){
+        this.discards = new ArrayList<Card>();
     }
-//    run a for loop across deck - at every card, pick a random other card and switch them
-    public void shuffle(){
-
+    public void add(Card card){
+        this.discards.add(card);--
     }
-    public void valueSort(){
+}
 
-    }
-    public void suitSort(){
 
+class Hand {
+    List<Card> hand = new ArrayList<Card>();
+    public Hand(List<Card> cardList){
+        this.hand = cardList;
     }
-    public List<Card> deal(int length){
-        List<Card> newList = new ArrayList<Card>();
-        for(int i=0; i<length; i++){
-            Card newCard = cardList.get(i);
-            cardList.remove(i);
-            newList.add(newCard);
+    public Hand(){
+        this.hand = new ArrayList<Card>();
+    }
+    public boolean play(Card card, Board board){
+        if(!board.isLegal(card, this.hand)){
+            return false;
         }
-        return newList;
-    }
-//
-    public boolean play(Card card){
-//        if card in cardList, discard it, and return true. Else, return false
-        if(cardList.contains(card)){
-            cardList.remove(card);
+        if(this.hand.contains(card)){
+            this.hand.remove(card);
             return true;
         }
         else{
             return false;
         }
     }
-}
-
-class Hand {
-    CardList hand;
-    public Hand(List<Card> cardList){
-        this.hand = new CardList(cardList);
+//    not really necessary at start - leave to do later
+    public void valueSort(){
     }
-    public void play(Card card){
-        this.hand.play(card);
+    public void suitSort(){
     }
 }
 
 class Deck {
-    CardList deck;
+    List<Card> deck = new ArrayList<Card>();
     public Deck(){
-        List<Card> cardList = new ArrayList<Card>();
         for(int suit = 0; suit<4;suit++){
             for(int value = 1;value<14;value++){
-                Card newCard = new Card(suit, value);
-                cardList.add(newCard);
+                deck.add(new Card(suit, value));
             }
         }
-        this.deck = new CardList(cardList);
-        this.deck.shuffle();
+        this.shuffle();
     }
+    public List<Card> deal(int length){
+        List<Card> newList = new ArrayList<Card>();
+        for(int i=0; i<length; i++){
+            Card newCard = deck.get(i);
+            deck.remove(i);
+            newList.add(newCard);
+    }
+    return newList;
+}
+    //    run a for loop across deck - at every card, pick a random other card and switch them
+    public void shuffle(){
 
+    }
 }
 
 class Card {
